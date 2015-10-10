@@ -9,7 +9,7 @@ HOSTNAME="${COLLECTD_HOSTNAME:-localhost}"
 INTERVAL="${COLLECTD_INTERVAL:-60}"
 
 while sleep "$INTERVAL"; do
-	VALUE=$(echo "$(cat /sys/devices/virtual/thermal/thermal_zone0/temp)/1000" | bc)
+	VALUE="$(($(cat /sys/devices/virtual/thermal/thermal_zone0/temp)/1000))"
 	if [ $? -ne 0 ]; then
 		VALUE="U"
 	fi
