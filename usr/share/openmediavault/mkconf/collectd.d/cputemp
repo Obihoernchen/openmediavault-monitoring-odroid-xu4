@@ -40,12 +40,12 @@ cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
 TITLE_CPUTEMP="CPU temperature"
 COLOR_CANVAS="#ffffff"           # white
 COLOR_CPUTEMP="#ff0000"          # red
-COLOR_CPUTEMP_TRANS="#ff000055"  # red
+COLOR_CPUTEMP_TRANS="#ff000044"  # red
 EOF
 for ucperiod in HOUR DAY WEEK MONTH YEAR; do
         lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
         cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cputemp-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUTEMP}\${${ucperiod}TITLE}" --slope-mode --lower-limit 0 --vertical-label °Celsius \
+rrdtool graph \${IMGDIR}/cputemp-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUTEMP}\${${ucperiod}TITLE}" --slope-mode --lower-limit 20 --vertical-label °Celsius \
   DEF:cputemp_avg=\${DATA}/temperature/temperature-cpu.rrd:value:AVERAGE \
   DEF:cputemp_min=\${DATA}/temperature/temperature-cpu.rrd:value:MIN \
   DEF:cputemp_max=\${DATA}/temperature/temperature-cpu.rrd:value:MAX \
