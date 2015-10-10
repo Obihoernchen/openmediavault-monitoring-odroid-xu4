@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# This file is part of OpenMediaVault.
+#
+# @license   http://www.gnu.org/licenses/gpl.html GPL Version 3
+# @author    Markus Hilger <admin@obihoernchen.net>
+# @copyright Copyright (c) 2009-2015 Volker Theile
+#
+# OpenMediaVault is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# OpenMediaVault is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with OpenMediaVault. If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+. /etc/default/openmediavault
+. /usr/share/openmediavault/scripts/helper-functions
+
+OMV_COLLECTD_CONFIG=${OMV_COLLECTD_CONFIG:-"/etc/collectd/collectd.conf"}
+OMV_COLLECTD_RRDTOOL_MKGRAPH=${OMV_COLLECTD_RRDTOOL_MKGRAPH:-"/usr/sbin/omv-mkgraph"}
+
+cat <<EOF >> ${OMV_COLLECTD_CONFIG}
+LoadPlugin exec
+<Plugin exec>
+        Exec "nobody" "/usr/local/bin/cputemp"
+</Plugin>
+
+EOF
+
+cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
+# Plugin: cputemp
+TITLE_CPUTEMP="CPU temperature"
+COLOR_CANVAS="#ffffff"           # white
+COLOR_CPUTEMP="#ff0000"          # red
+COLOR_CPUTEMP_TRANS="#ff000055"  # red
+EOF
+for ucperiod in HOUR DAY WEEK MONTH YEAR; do
+        lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
+        cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
+rrdtool graph \${IMGDIR}/cputemp-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUTEMP}\${${ucperiod}TITLE}" --slope-mode --lower-limit 0 --vertical-label °Celsius \
+  DEF:cputemp_avg=\${DATA}/temperature/temperature-cpu.rrd:value:AVERAGE \
+  DEF:cputemp_min=\${DATA}/temperature/temperature-cpu.rrd:value:MIN \
+  DEF:cputemp_max=\${DATA}/temperature/temperature-cpu.rrd:value:MAX \
+  AREA:cputemp_max\${COLOR_CPUTEMP_TRANS} \
+  AREA:cputemp_min\${COLOR_CANVAS} \
+  LINE1:cputemp_avg\${COLOR_CPUTEMP}:"Temperature" \
+  GPRINT:cputemp_min:MIN:"%5.1lf%s Min" \
+  GPRINT:cputemp_avg:AVERAGE:"%5.1lf%s Avg" \
+  GPRINT:cputemp_max:MAX:"%5.1lf%s Max" \
+  GPRINT:cputemp_avg:LAST:"%5.1lf%s Last\l" \
+  COMMENT:"\${LASTUPDATE}" >/dev/null
+EOF
+done

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Read CPU temperature of ODROID-XU3/4
+# There are 2 sensors available:
+# /sys/devices/virtual/thermal/thermal_zone0/temp
+# /sys/devices/10060000.tmu/temp
+
+HOSTNAME="${COLLECTD_HOSTNAME:-localhost}"
+INTERVAL="${COLLECTD_INTERVAL:-60}"
+
+while sleep "$INTERVAL"; do
+	VALUE=$(echo "$(cat /sys/devices/virtual/thermal/thermal_zone0/temp)/1000" | bc)
+	if [ $? -ne 0 ]; then
+		VALUE="U"
+	fi
+	echo "PUTVAL \"$HOSTNAME/temperature/temperature-cpu\" interval=$INTERVAL N:$VALUE"
+done
