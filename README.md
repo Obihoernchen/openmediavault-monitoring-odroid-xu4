@@ -1,5 +1,6 @@
 # openmediavault-monitoring-odroid-xu4
-Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4
+Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4.
+Should work for ODROID-XU3 as well.
 
 ## Installation
 Copy all files to their path. Then execute the following commands as root:
