@@ -13,3 +13,7 @@ chmod 644 /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/C
 
 source /usr/share/openmediavault/scripts/helper-functions && omv_purge_internal_cache
 ```
+
+## Examples
+![CPU Frequency](http://obihoernchen.net/wordpress/wp-content/uploads/2015/10/Screenshot-from-2015-10-20-18-56-20.png)
+![CPU Temperature](http://obihoernchen.net/wordpress/wp-content/uploads/2015/10/Screenshot-from-2015-10-20-18-56-42.png)
