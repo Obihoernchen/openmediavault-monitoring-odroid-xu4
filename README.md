@@ -4,6 +4,7 @@ Should work for ODROID-XU3 as well.
 
 ## Installation
 ```Shell
+cd /tmp
 wget https://github.com/Obihoernchen/openmediavault-monitoring-odroid-xu4/archive/master.zip
 unzip master.zip
 cd openmediavault-monitoring-odroid-xu4-master
