@@ -3,8 +3,14 @@ Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4
 Should work for ODROID-XU3 as well.
 
 ## Installation
-Copy all files to their path. Then execute the following commands as root:
 ```Shell
+wget https://github.com/Obihoernchen/openmediavault-monitoring-odroid-xu4/archive/master.zip
+unzip master.zip
+cd openmediavault-monitoring-odroid-xu4-master
+cp -R usr/* /usr
+cp -R var/* /var
+rm -r /tmp/openmediavault-monitoring-odroid-xu4-master
+
 chmod +x /usr/local/bin/cputemp /usr/share/openmediavault/mkconf/collectd.d/cpu{freq,temp}
 omv-mkconf collectd
 
