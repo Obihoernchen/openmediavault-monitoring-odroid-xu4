@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Read CPU fan speed of ODROID-XU3/4
+#
+# Current state of fan speed (0..3):
+#   /sys/class/thermal/cooling_device2/cur_state
+#
+# Index of fan speed (255 = 100%):
+#   /sys/devices/platform/pwm-fan:/hwmon/hwmon0/fan_speed
+
+HOSTNAME="${COLLECTD_HOSTNAME:-localhost}"
+INTERVAL="${COLLECTD_INTERVAL:-1}"
+
+while sleep "$INTERVAL"; do
+        FIELD="$(cat /sys/class/thermal/cooling_device2/cur_state)"
+        SPEED="$(cat /sys/devices/platform/pwm-fan:/hwmon/hwmon0/fan_speed | cut --delimiter=' ' -f $(($FIELD + 1)))"
+        VALUE=$(echo "scale=2; $SPEED*100/255" | bc -l)
+        if [ $? -ne 0 ]; then
+                VALUE="U"
+        fi
+        echo "PUTVAL \"$HOSTNAME/fanspeed/fanspeed\" interval=$INTERVAL N:$VALUE"
+done

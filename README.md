@@ -13,7 +13,7 @@ cp -R var/* /var
 rm -r /tmp/openmediavault-monitoring-odroid-xu4-master
 cd /
 
-chmod +x /usr/local/bin/cputemp /usr/share/openmediavault/mkconf/collectd.d/cpu{freq,temp}
+chmod +x /usr/local/bin/cpu{temp,fanspeed} /usr/share/openmediavault/mkconf/collectd.d/cpu{freq,temp,fanspeed}
 omv-mkconf collectd
 
 chown openmediavault-webgui:openmediavault-webgui /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/Cpu{Temperature,Frequency}.js
