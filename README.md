@@ -16,8 +16,8 @@ cd /
 chmod +x /usr/local/bin/cpu{temp,fanspeed} /usr/share/openmediavault/mkconf/collectd.d/cpu{freq,temp,fanspeed}
 omv-mkconf collectd
 
-chown openmediavault-webgui:openmediavault-webgui /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/Cpu{Temperature,Frequency}.js
-chmod 644 /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/Cpu{Temperature,Frequency}.js
+chown openmediavault-webgui:openmediavault-webgui /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/Cpu{Temperature,Frequency,FanSpeed}.js
+chmod 644 /var/www/openmediavault/js/omv/module/admin/diagnostic/system/plugin/Cpu{Temperature,Frequency,FanSpeed}.js
 
 source /usr/share/openmediavault/scripts/helper-functions && omv_purge_internal_cache
 
