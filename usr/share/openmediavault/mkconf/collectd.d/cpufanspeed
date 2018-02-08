@@ -36,18 +36,16 @@ LoadPlugin exec
 EOF
 
 cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-# Plugin: cputemp
+# Plugin: cpufanspeed
 TITLE_CPUFANSPEED="CPU fan speed"
-COLOR_CANVAS="#ffffff"           # white
+COLOR_CANVAS="#ffffff"               # white
 COLOR_CPUFANSPEED="#ff0000"          # red
 COLOR_CPUFANSPEED_TRANS="#ff000044"  # red
 EOF
 for ucperiod in HOUR DAY WEEK MONTH YEAR; do
         lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
         cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cpufanspeed-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFANSPEED}\${${ucperiod}TITLE}" --slope-mode$
-  DEF:cpufanspeed_avg=\${DATA}/fanspeed/fanspeed.rrd:value:AVERAGE \
-  DEF:cpufanspeed_min=\${DATA}/fanspeed/fanspeed.rrd:value:MIN \
+rrdtool graph \${IMGDIR}/cpufanspeed-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFANSPEED}\${${ucperiod}TITLE}" --slope-mode --lower-limit 0 --vertical-label RPM \
   DEF:cpufanspeed_max=\${DATA}/fanspeed/fanspeed.rrd:value:MAX \
   AREA:cpufanspeed_max\${COLOR_CPUFANSPEED_TRANS} \
   AREA:cpufanspeed_min\${COLOR_CANVAS} \
