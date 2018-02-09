@@ -45,7 +45,7 @@ EOF
 for ucperiod in HOUR DAY WEEK MONTH YEAR; do
         lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
         cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cpufanspeed-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFANSPEED}\${${ucperiod}TITLE}" --slope-mode --lower-limit 0 --vertical-label % \
+rrdtool graph \${IMGDIR}/cpufanspeed-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFANSPEED}\${${ucperiod}TITLE}" --slope-mode --upper-limit 100 --lower-limit 0 --rigid --vertical-label Percent \
   DEF:cpufanspeed_max=\${DATA}/fanspeed/fanspeed.rrd:value:MAX \
   AREA:cpufanspeed_max\${COLOR_CPUFANSPEED_TRANS} \
   AREA:cpufanspeed_min\${COLOR_CANVAS} \
