@@ -9,7 +9,7 @@
 #   /sys/devices/platform/pwm-fan:/hwmon/hwmon0/fan_speed
 
 HOSTNAME="${COLLECTD_HOSTNAME:-localhost}"
-INTERVAL="${COLLECTD_INTERVAL:-1}"
+INTERVAL="${COLLECTD_INTERVAL:-60}"
 
 while sleep "$INTERVAL"; do
         FIELD="$(cat /sys/class/thermal/cooling_device2/cur_state)"
