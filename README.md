@@ -1,3 +1,8 @@
+# update 2018-09-09 by @akidburn
+
+	- updated cputemp and cpufreq views for omv 4
+	
+
 # openmediavault-monitoring-odroid-xu4
 Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4.
 Should work for ODROID-XU3 as well.
@@ -5,7 +10,7 @@ Should work for ODROID-XU3 as well.
 ## Installation
 ```Shell
 cd /tmp
-wget https://github.com/Obihoernchen/openmediavault-monitoring-odroid-xu4/archive/master.zip
+wget https://github.com/akidburn/openmediavault-monitoring-odroid-xu4/archive/master.zip
 unzip master.zip
 cd openmediavault-monitoring-odroid-xu4-master
 cp -R usr/* /usr
