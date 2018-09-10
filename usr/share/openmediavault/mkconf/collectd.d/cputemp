@@ -31,3 +31,4 @@ LoadPlugin exec
 <Plugin exec>
         Exec "nobody" "/usr/local/bin/cputemp"
 </Plugin>
+EOF

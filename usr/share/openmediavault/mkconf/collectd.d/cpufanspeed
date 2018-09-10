@@ -24,38 +24,11 @@ set -e
 . /etc/default/openmediavault
 . /usr/share/openmediavault/scripts/helper-functions
 
-OMV_COLLECTD_CONFIG=${OMV_COLLECTD_CONFIG:-"/etc/collectd/collectd.conf"}
-OMV_COLLECTD_RRDTOOL_MKGRAPH=${OMV_COLLECTD_RRDTOOL_MKGRAPH:-"/usr/sbin/omv-mkgraph"}
+OMV_COLLECTD_CONFIG_DIR=${OMV_COLLECTD_CONFIG_DIR:-"/etc/collectd/collectd.conf.d"}
 
-cat <<EOF >> ${OMV_COLLECTD_CONFIG}
-LoadPlugin exec
-<Plugin exec>
+cat <<EOF > "${OMV_COLLECTD_CONFIG_DIR}/execfan.conf"
+LoadPlugin execfan
+<Plugin execfan>
         Exec "nobody" "/usr/local/bin/cpufanspeed"
 </Plugin>
-
 EOF
-
-cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-# Plugin: cpufanspeed
-TITLE_CPUFANSPEED="CPU fan speed"
-COLOR_CANVAS="#ffffff"               # white
-COLOR_CPUFANSPEED="#ff0000"          # red
-COLOR_CPUFANSPEED_TRANS="#ff000044"  # red
-EOF
-for ucperiod in HOUR DAY WEEK MONTH YEAR; do
-        lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
-        cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cpufanspeed-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFANSPEED}\${${ucperiod}TITLE}" --slope-mode --upper-limit 100 --lower-limit 0 --rigid --vertical-label Percent \
-  DEF:cpufanspeed_avg=\${DATA}/fanspeed/fanspeed.rrd:value:AVERAGE \
-  DEF:cpufanspeed_min=\${DATA}/fanspeed/fanspeed.rrd:value:MIN \
-  DEF:cpufanspeed_max=\${DATA}/fanspeed/fanspeed.rrd:value:MAX \
-  AREA:cpufanspeed_max\${COLOR_CPUFANSPEED_TRANS} \
-  AREA:cpufanspeed_min\${COLOR_CANVAS} \
-  LINE1:cpufanspeed_avg\${COLOR_CPUFANSPEED}:"Speed" \
-  GPRINT:cpufanspeed_min:MIN:"%5.1lf%s Min" \
-  GPRINT:cpufanspeed_avg:AVERAGE:"%5.1lf%s Avg" \
-  GPRINT:cpufanspeed_max:MAX:"%5.1lf%s Max" \
-  GPRINT:cpufanspeed_avg:LAST:"%5.1lf%s Last\l" \
-  COMMENT:"\${LASTUPDATE}" >/dev/null
-EOF
-done
