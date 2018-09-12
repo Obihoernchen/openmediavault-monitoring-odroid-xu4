@@ -24,38 +24,11 @@ set -e
 . /etc/default/openmediavault
 . /usr/share/openmediavault/scripts/helper-functions
 
-OMV_COLLECTD_CONFIG=${OMV_COLLECTD_CONFIG:-"/etc/collectd/collectd.conf"}
-OMV_COLLECTD_RRDTOOL_MKGRAPH=${OMV_COLLECTD_RRDTOOL_MKGRAPH:-"/usr/sbin/omv-mkgraph"}
+OMV_COLLECTD_CONFIG_DIR=${OMV_COLLECTD_CONFIG_DIR:-"/etc/collectd/collectd.conf.d"}
 
-cat <<EOF >> ${OMV_COLLECTD_CONFIG}
+cat <<EOF > "${OMV_COLLECTD_CONFIG_DIR}/exec.conf"
 LoadPlugin exec
 <Plugin exec>
         Exec "nobody" "/usr/local/bin/cputemp"
 </Plugin>
-
 EOF
-
-cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-# Plugin: cputemp
-TITLE_CPUTEMP="CPU temperature"
-COLOR_CANVAS="#ffffff"           # white
-COLOR_CPUTEMP="#ff0000"          # red
-COLOR_CPUTEMP_TRANS="#ff000044"  # red
-EOF
-for ucperiod in HOUR DAY WEEK MONTH YEAR; do
-        lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
-        cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cputemp-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUTEMP}\${${ucperiod}TITLE}" --slope-mode --lower-limit 20 --vertical-label °Celsius \
-  DEF:cputemp_avg=\${DATA}/temperature/temperature-cpu.rrd:value:AVERAGE \
-  DEF:cputemp_min=\${DATA}/temperature/temperature-cpu.rrd:value:MIN \
-  DEF:cputemp_max=\${DATA}/temperature/temperature-cpu.rrd:value:MAX \
-  AREA:cputemp_max\${COLOR_CPUTEMP_TRANS} \
-  AREA:cputemp_min\${COLOR_CANVAS} \
-  LINE1:cputemp_avg\${COLOR_CPUTEMP}:"Temperature" \
-  GPRINT:cputemp_min:MIN:"%5.1lf%s Min" \
-  GPRINT:cputemp_avg:AVERAGE:"%5.1lf%s Avg" \
-  GPRINT:cputemp_max:MAX:"%5.1lf%s Max" \
-  GPRINT:cputemp_avg:LAST:"%5.1lf%s Last\l" \
-  COMMENT:"\${LASTUPDATE}" >/dev/null
-EOF
-done

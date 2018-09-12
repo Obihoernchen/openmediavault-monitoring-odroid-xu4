@@ -18,47 +18,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with OpenMediaVault. If not, see <http://www.gnu.org/licenses/>.
-
 set -e
 
 . /etc/default/openmediavault
 . /usr/share/openmediavault/scripts/helper-functions
 
-OMV_COLLECTD_CONFIG=${OMV_COLLECTD_CONFIG:-"/etc/collectd/collectd.conf"}
-OMV_COLLECTD_RRDTOOL_MKGRAPH=${OMV_COLLECTD_RRDTOOL_MKGRAPH:-"/usr/sbin/omv-mkgraph"}
+OMV_COLLECTD_CONFIG_DIR=${OMV_COLLECTD_CONFIG_DIR:-"/etc/collectd/collectd.conf.d"}
 
-cat <<EOF >> ${OMV_COLLECTD_CONFIG}
+cat <<EOF > "${OMV_COLLECTD_CONFIG_DIR}/cpufreq.conf"
 LoadPlugin cpufreq
-
 EOF
-
-cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-# Plugin: cpufreq
-TITLE_CPUFREQ="CPU frequency"
-COLOR_CANVAS="#ffffff"              # white
-COLOR_CPUFREQ_A7="#0000fd"          # blue
-COLOR_CPUFREQ_A15="#ff0000"         # red
-EOF
-for ucperiod in HOUR DAY WEEK MONTH YEAR; do
-	lcperiod=$(echo ${ucperiod} | tr '[:upper:]' '[:lower:]')
-	cat <<EOF >> ${OMV_COLLECTD_RRDTOOL_MKGRAPH}
-rrdtool graph \${IMGDIR}/cpufreq-${lcperiod}.png --start \${${ucperiod}START} \${DEFAULTS} --title "\${TITLE_CPUFREQ}\${${ucperiod}TITLE}" --slope-mode --lower-limit 0 --vertical-label Hz \
-  DEF:cpufreq0_avg=\${DATA}/cpufreq/cpufreq-0.rrd:value:AVERAGE \
-  DEF:cpufreq0_min=\${DATA}/cpufreq/cpufreq-0.rrd:value:MIN \
-  DEF:cpufreq0_max=\${DATA}/cpufreq/cpufreq-0.rrd:value:MAX \
-  DEF:cpufreq4_avg=\${DATA}/cpufreq/cpufreq-4.rrd:value:AVERAGE \
-  DEF:cpufreq4_min=\${DATA}/cpufreq/cpufreq-4.rrd:value:MIN \
-  DEF:cpufreq4_max=\${DATA}/cpufreq/cpufreq-4.rrd:value:MAX \
-  LINE1:cpufreq0_avg\${COLOR_CPUFREQ_A7}:" Cortex-A7" \
-  GPRINT:cpufreq0_min:MIN:"%5.1lf%s Min" \
-  GPRINT:cpufreq0_avg:AVERAGE:"%5.1lf%s Avg" \
-  GPRINT:cpufreq0_max:MAX:"%5.1lf%s Max" \
-  GPRINT:cpufreq0_avg:LAST:"%5.1lf%s Last\l" \
-  LINE1:cpufreq4_avg\${COLOR_CPUFREQ_A15}:"Cortex-A15" \
-  GPRINT:cpufreq4_min:MIN:"%5.1lf%s Min" \
-  GPRINT:cpufreq4_avg:AVERAGE:"%5.1lf%s Avg" \
-  GPRINT:cpufreq4_max:MAX:"%5.1lf%s Max" \
-  GPRINT:cpufreq4_avg:LAST:"%5.1lf%s Last\l" \
-  COMMENT:"\${LASTUPDATE}" >/dev/null
-EOF
-done
