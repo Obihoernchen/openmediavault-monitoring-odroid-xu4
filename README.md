@@ -3,14 +3,6 @@
 Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4.
 Should work for ODROID-XU3 as well.
 
-## update 2018-09-10
-
-	- updated cpufanspeed view for omv 4 
-
-## update 2018-09-09
-
-	- updated cputemp and cpufreq views for omv 4
-	
 
 ## Installation
 ```Shell
