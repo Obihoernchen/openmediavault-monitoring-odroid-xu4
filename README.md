@@ -4,10 +4,11 @@ Some additional RRDTool graphs for OpenMediaVault Monitoring for your ODROID-XU4
 Should work for ODROID-XU3 as well.
 
 
+
 ## Installation
 ```Shell
 cd /tmp
-wget https://github.com/akidburn/openmediavault-monitoring-odroid-xu4/archive/master.zip
+wget https://github.com/obihoernchen/openmediavault-monitoring-odroid-xu4/archive/master.zip
 unzip master.zip
 cd openmediavault-monitoring-odroid-xu4-master
 cp -R usr/* /usr
